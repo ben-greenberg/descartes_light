@@ -152,6 +152,34 @@ bool Solver<FloatType>::build(const std::vector<typename PositionSampler<FloatTy
   return build(trajectory, evaluators, num_threads);
 }
 
+template<typename FloatType>
+bool Solver<FloatType>::sample(std::vector<typename PositionSampler<FloatType>::Ptr>& trajectory,
+                               std::vector<typename EdgeEvaluator<FloatType>::Ptr>& edge_evaluators)
+{
+  failed_vertices_.clear();
+  failed_edges_.clear();
+
+  // Build Vertices
+  long num_waypoints = static_cast<long>(trajectory.size());
+  long cnt = 0;
+  for (long i = 0; i < static_cast<long>(trajectory.size()); ++i)
+  {
+    std::vector<FloatType> vertex_data;
+    if (trajectory[static_cast<size_t>(i)]->sample(vertex_data))
+    {
+      graph_.getRung(static_cast<size_t>(i)).data = std::move(vertex_data);
+      return true;
+    }
+    else
+    {
+      {
+        failed_vertices_.push_back(static_cast<size_t>(i));
+      }
+      return false;
+    }
+  }
+}
+
 template <typename FloatType>
 bool Solver<FloatType>::search(std::vector<FloatType>& solution)
 {

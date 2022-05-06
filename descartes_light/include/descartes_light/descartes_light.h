@@ -44,6 +44,15 @@ public:
              typename EdgeEvaluator<FloatType>::Ptr edge_eval,
              int num_threads = getMaxThreads());
 
+  /**
+   * @brief Just sample the waypoints passed
+   * @param points          A vector of point samplers
+   * @param edge_evaluator  A vector of speed evaluators, the vector size should be one less than the point samplers vector
+   * @return True if sampling succeeds, otherwise false
+   */
+  bool sample(std::vector< typename PositionSampler<FloatType>::Ptr >& points,
+              std::vector<typename EdgeEvaluator<FloatType>::Ptr>& edge_evaluators);
+
   const std::vector<std::size_t>& getFailedVertices() const { return failed_vertices_; }
   const std::vector<std::size_t>& getFailedEdges() const { return failed_edges_; }
 
